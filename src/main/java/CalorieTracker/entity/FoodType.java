@@ -1,4 +1,4 @@
-package entity;
+package CalorieTracker.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,31 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Builder
-public class User {
+public class FoodType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long foodTypeId;
 
-    private String userName;
-
-
-    private LocalDate dateOfBirth;
-
-
-    private Double height;
-
-
-    private Double weight;
-
-
-    private Double profileImgUrl;
-
+    private String foodTypeName;
 
 }

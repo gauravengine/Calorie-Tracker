@@ -1,6 +1,6 @@
-package Repository;
+package CalorieTracker.repository;
 
-import entity.User;
+import CalorieTracker.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

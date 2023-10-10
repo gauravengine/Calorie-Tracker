@@ -1,4 +1,4 @@
-package entity;
+package CalorieTracker.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,11 +28,11 @@ public class Entries {
 
     private LocalTime localTime;
 
-//    @OneToOne
-//    @JoinColumn(name = "food_type_id")
-//    FoodTypes foodTypes;
+    @OneToOne
+    @JoinColumn(name = "food_type_id")
+    FoodType foodTypes;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 }
