@@ -11,7 +11,7 @@ public class FoodTypeRepositoryTest {
     FoodTypeRepository foodTypeRepository;
 
     @Test
-    public void saveFoodTypesTest(){
+    public void saveFoodTypeTest(){
         FoodType foodType=FoodType
                 .builder()
                 .foodTypeName("Protein")
