@@ -22,15 +22,13 @@ public class Entries {
 
     private String foodName;
 
-
     private Long calories;
 
     private LocalDate localDate;
 
-
     private LocalTime localTime;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "food_type_id")
     FoodType foodType;
 

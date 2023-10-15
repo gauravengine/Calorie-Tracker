@@ -24,7 +24,7 @@ public class EntriesRepositoryTest {
     public void saveEntry(){
         Long userId=1L;
         Long foodTypeId=1L;
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).get();
         FoodType foodType=foodTypeRepository.findByFoodTypeId(foodTypeId);
 
         Entries entries=Entries
