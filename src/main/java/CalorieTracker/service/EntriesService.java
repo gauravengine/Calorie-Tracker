@@ -11,4 +11,6 @@ public interface EntriesService {
     void createEntry(EntryRequestDTO entryRequestDTO);
 
     List<Entries> getEntriesForDate(GetEntryForDateDTO data);
+
+
 }

@@ -39,5 +39,6 @@ public class EntriesController {
         }
     }
 
-    public ResponseEntity<List<Entries>> getLastNdates()
+
+
 }

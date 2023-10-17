@@ -36,8 +36,7 @@ public class EntriesServiceImpl implements EntriesService{
         Entries entries=Entries
                 .builder()
                 .foodName(entryRequestDTO.getFoodName())
-                .calories(entryRequestDTO.getCalories())
-                .localDate(entryRequestDTO.getLocalDate())
+                .calories(entryRequestDTO.getCalories()).localDate(entryRequestDTO.getLocalDate())
                 .localTime(entryRequestDTO.getLocalTime())
                 .user(user)
                 .foodType(foodType)
