@@ -1,7 +1,6 @@
 package CalorieTracker.controller;
 
 import CalorieTracker.entity.Entries;
-import CalorieTracker.repository.UserRepository;
 import CalorieTracker.service.EntriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
