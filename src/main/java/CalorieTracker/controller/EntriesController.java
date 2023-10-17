@@ -1,6 +1,7 @@
 package CalorieTracker.controller;
 
 import CalorieTracker.entity.Entries;
+import CalorieTracker.errors.CustomException;
 import CalorieTracker.service.EntriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,26 +18,24 @@ public class EntriesController {
     private EntriesService entriesService;
 
     @PostMapping
-    public ResponseEntity<Object> createEntry(@RequestBody EntryRequestDTO entryRequestDTO){
+    public ResponseEntity<Object> createEntry(@RequestBody EntryRequestDTO entryRequestDTO) {
         try {
             entriesService.createEntry(entryRequestDTO);
             return ResponseEntity.ok().body(Map.of("message", "Entry saved successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Entry not saved successfully: " + e.getMessage()));
+            throw new CustomException("Entry not saved successfully: " + e.getMessage());
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<Entries>> getEntriesForDate(@RequestBody GetEntryForDateDTO data){
+    public ResponseEntity<List<Entries>> getEntriesForDate(@RequestBody GetEntryForDateDTO data) {
         try {
-            List<Entries> returnData= entriesService.getEntriesForDate(data);
+            List<Entries> returnData = entriesService.getEntriesForDate(data);
             return ResponseEntity.ok().body(returnData);
         } catch (Exception e) {
-            return (ResponseEntity<List<Entries>>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
-
+            throw new CustomException("Error fetching entries for date: " + e.getMessage());
         }
     }
 
-    public ResponseEntity<List<Entries>> getLastNdates()
+    // ... other methods ...
 }
