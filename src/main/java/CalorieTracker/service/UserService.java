@@ -1,6 +1,7 @@
 package CalorieTracker.service;
 
 import CalorieTracker.entity.User;
+import CalorieTracker.errors.CustomException;
 import CalorieTracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class UserService {
 
     public User updateUser(Long id, User user) {
 
-        User _user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User _user = userRepository.findById(id).orElseThrow(() -> new CustomException("User not found"));
         _user.setUserName(user.getUserName());
         _user.setDateOfBirth(user.getDateOfBirth());
         _user.setHeight(user.getHeight());
