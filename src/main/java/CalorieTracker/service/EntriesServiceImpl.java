@@ -2,6 +2,7 @@ package CalorieTracker.service;
 
 import CalorieTracker.controller.EntryRequestDTO;
 import CalorieTracker.controller.GetEntryForDateDTO;
+import CalorieTracker.controller.GetNDaysCalsDTO;
 import CalorieTracker.entity.Entries;
 import CalorieTracker.entity.FoodType;
 import CalorieTracker.entity.User;
@@ -13,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class EntriesServiceImpl implements EntriesService{
@@ -50,6 +54,52 @@ public class EntriesServiceImpl implements EntriesService{
     public List<Entries> getEntriesForDate(GetEntryForDateDTO data) {
         return entriesRepository.findByUserUserIdAndLocalDate(data.getUserId(),data.getLocalDate());
     }
+    @Override
+    public HashMap<String, Long> getEntriesForRange(GetNDaysCalsDTO data){
+        HashMap<String,Long> dateWise=new HashMap<>();
+        LocalDate currDate= data.getStartDate();
+        while(!currDate.isAfter(data.getEndDate())){
+            List<Entries> entriesForCurrentDay=entriesRepository.findByUserUserIdAndLocalDate(data.getUserId(),currDate);
+//            System.out.println(data.getUserId());
+//            System.out.println(entriesForCurrentDay);
+//            System.out.println(currDate);
+            Long calories=0L;
+            for(Entries entry:entriesForCurrentDay){
+                calories+=entry.getCalories();
+            }
+            dateWise.put(currDate.toString(),calories);
+            currDate= currDate.plusDays(1);
+        }
+        return dateWise;
+    }
 
+    @Override
+    public Entries updateEntries(Long entryId,Entries entry){
+        Optional<Entries> dbEntryOpt=entriesRepository.findById(entryId);
+        Entries dbEntry;
+        if(dbEntryOpt.isEmpty()) {
+            throw new CustomException("bad request ! Entry Id not valid");
+        }
+        else{
+            dbEntry = dbEntryOpt.get();
+        }
+
+        if(Objects.nonNull(entry.getCalories())){
+            dbEntry.setCalories(entry.getCalories());
+        }
+
+        if(Objects.nonNull(entry.getLocalDate())){
+            dbEntry.setLocalDate(entry.getLocalDate());
+        }
+
+        if(Objects.nonNull(entry.getLocalTime())){
+            dbEntry.setLocalTime(entry.getLocalTime());
+        }
+
+        if(Objects.nonNull(entry.getFoodName())){
+            dbEntry.setFoodName(entry.getFoodName());
+        }
+        return entriesRepository.save(dbEntry);
+    }
 
 }

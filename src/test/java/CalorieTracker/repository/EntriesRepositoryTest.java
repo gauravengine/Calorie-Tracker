@@ -39,5 +39,9 @@ public class EntriesRepositoryTest {
 
         entriesRepository.save(entries);
     }
+    @Test
+    public void viewEntries(){
+        System.out.println(entriesRepository.findByUserUserIdAndLocalDate(1L,LocalDate.of(2023,10,13)));
+    }
 
 }

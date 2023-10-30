@@ -4,10 +4,10 @@ import CalorieTracker.entity.Entries;
 import CalorieTracker.errors.CustomException;
 import CalorieTracker.service.EntriesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +38,20 @@ public class EntriesController {
     }
 
 
-    // ... other methods ...
 
+    @GetMapping("/range")
+    ResponseEntity<HashMap<String,Long>> getEntriesForRange(@RequestBody GetNDaysCalsDTO getNDaysCalsDTO){
+        try {
+            HashMap<String,Long> returnData = entriesService.getEntriesForRange(getNDaysCalsDTO);
+            return ResponseEntity.ok().body(returnData);
+        } catch (Exception e) {
+            throw new CustomException("Error fetching entries for Range: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Entries> updateEntries(@PathVariable("id") Long iD, @RequestBody Entries entry){
+        Entries entries = entriesService.updateEntries(iD,entry);
+        return ResponseEntity.ok().body(entries);
+    }
 }

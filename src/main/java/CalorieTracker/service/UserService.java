@@ -30,7 +30,6 @@ public class UserService {
         _user.setWeight(user.getWeight());
         _user.setProfileImgUrl(user.getProfileImgUrl());
         return userRepository.save(_user);
-
     }
 }
 
