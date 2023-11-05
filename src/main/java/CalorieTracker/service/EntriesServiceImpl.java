@@ -22,7 +22,6 @@ import java.util.Optional;
 @Service
 public class EntriesServiceImpl implements EntriesService{
 
-
     @Autowired
     private  EntriesRepository entriesRepository;
 
@@ -58,18 +57,16 @@ public class EntriesServiceImpl implements EntriesService{
     public HashMap<String, Long> getEntriesForRange(GetNDaysCalsDTO data){
         HashMap<String,Long> dateWise=new HashMap<>();
         LocalDate currDate= data.getStartDate();
+        List<Entries> entriesForRange=entriesRepository.findByUserUserIdAndLocalDateBetween(data.getUserId(),data.getStartDate(),data.getEndDate());
+
         while(!currDate.isAfter(data.getEndDate())){
-            List<Entries> entriesForCurrentDay=entriesRepository.findByUserUserIdAndLocalDate(data.getUserId(),currDate);
-//            System.out.println(data.getUserId());
-//            System.out.println(entriesForCurrentDay);
-//            System.out.println(currDate);
-            Long calories=0L;
-            for(Entries entry:entriesForCurrentDay){
-                calories+=entry.getCalories();
-            }
-            dateWise.put(currDate.toString(),calories);
+            dateWise.put(currDate.toString(),0L);
             currDate= currDate.plusDays(1);
         }
+        for(Entries entry:entriesForRange){
+            dateWise.put(entry.getLocalDate().toString(),dateWise.get(entry.getLocalDate().toString())+entry.getCalories());
+        }
+
         return dateWise;
     }
 

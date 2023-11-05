@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface EntriesRepository extends JpaRepository<Entries,Long> {
     List<Entries> findByUserUserIdAndLocalDate(Long userId, LocalDate localDate);
+
+    List<Entries> findByUserUserIdAndLocalDateBetween(Long userId, LocalDate startDate,LocalDate endDate);
 }
