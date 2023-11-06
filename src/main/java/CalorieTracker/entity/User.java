@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
 
@@ -23,9 +24,7 @@ public class User {
 
     private LocalDate dateOfBirth;
 
-
     private Double height;
-
 
     private Double weight;
 

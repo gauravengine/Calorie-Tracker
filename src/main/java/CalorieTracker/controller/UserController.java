@@ -19,6 +19,9 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
+        if (user.getHeight() == null || user.getWeight() == null){
+            throw new CustomException("These fields cannot be empty");
+        }
         try {
             User savedUser = userService.addUser(user);
             return new ResponseEntity<>(savedUser, HttpStatus.CREATED);

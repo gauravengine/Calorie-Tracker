@@ -19,8 +19,12 @@ public class EntriesController {
 
     @PostMapping
     public ResponseEntity<Object> createEntry(@RequestBody EntryRequestDTO entryRequestDTO) {
+        if (entryRequestDTO.getFoodName() == null || entryRequestDTO.getCalories() == null || entryRequestDTO.getLocalDate() == null || entryRequestDTO.getLocalTime() == null){
+            throw new CustomException("Fields cannot be NULL");
+        }
         try {
             entriesService.createEntry(entryRequestDTO);
+
             return ResponseEntity.ok().body(Map.of("message", "Entry saved successfully"));
         } catch (Exception e) {
             throw new CustomException("Entry not saved successfully: " + e.getMessage());
