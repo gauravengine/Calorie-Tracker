@@ -23,7 +23,6 @@ public class GEntriesServiceImplTest {
                 .endDate(LocalDate.of(2023,10,15))
                 .build();
 
-
         System.out.println(entriesService.getEntriesForRange(getNDaysCalsDTO));
     }
 }

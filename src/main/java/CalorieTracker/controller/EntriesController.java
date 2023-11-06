@@ -51,7 +51,12 @@ public class EntriesController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Entries> updateEntries(@PathVariable("id") Long iD, @RequestBody Entries entry){
-        Entries entries = entriesService.updateEntries(iD,entry);
-        return ResponseEntity.ok().body(entries);
+        try{
+            Entries entries = entriesService.updateEntries(iD,entry);
+            return ResponseEntity.ok().body(entries);
+        } catch (Exception e){
+            throw new CustomException("Error updating the entry: " + e.getMessage());
+        }
+
     }
 }
