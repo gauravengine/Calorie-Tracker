@@ -3,10 +3,12 @@ package CalorieTracker.service;
 import CalorieTracker.controller.EntryRequestDTO;
 import CalorieTracker.controller.GetEntryForDateDTO;
 import CalorieTracker.controller.GetNDaysCalsDTO;
+import CalorieTracker.entity.DateSumCalorie;
 import CalorieTracker.entity.Entries;
 import CalorieTracker.entity.FoodType;
 import CalorieTracker.entity.User;
 import CalorieTracker.errors.CustomException;
+import CalorieTracker.repository.DateSumCalorieRepository;
 import CalorieTracker.repository.EntriesRepository;
 import CalorieTracker.repository.FoodTypeRepository;
 import CalorieTracker.repository.UserRepository;
@@ -14,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class EntriesServiceImpl implements EntriesService{
@@ -30,6 +29,9 @@ public class EntriesServiceImpl implements EntriesService{
 
     @Autowired
     private FoodTypeRepository foodTypeRepository;
+
+    @Autowired
+    private DateSumCalorieRepository dateSumCalorieRepository;
     @Override
     public void createEntry(EntryRequestDTO entryRequestDTO) {
         FoodType foodType = foodTypeRepository.findById(entryRequestDTO.getFoodTypeId())
@@ -48,6 +50,23 @@ public class EntriesServiceImpl implements EntriesService{
                 .build();
 
         entriesRepository.save(entries);
+        DateSumCalorie dateSumCalorie=dateSumCalorieRepository.findByUserAndLocalDate(user,entryRequestDTO.getLocalDate());
+        System.out.println(dateSumCalorie);
+
+        if(Objects.isNull(dateSumCalorie)){
+            dateSumCalorie=DateSumCalorie
+                    .builder()
+                    .calorieSum(entryRequestDTO.getCalories())
+                    .user(user)
+                    .localDate(entryRequestDTO.getLocalDate())
+                    .build();
+
+            dateSumCalorieRepository.save(dateSumCalorie);
+        }
+        else {
+            dateSumCalorie.setCalorieSum(dateSumCalorie.getCalorieSum()+ entryRequestDTO.getCalories());
+            dateSumCalorieRepository.save(dateSumCalorie);
+        }
     }
 
     @Override
@@ -84,10 +103,60 @@ public class EntriesServiceImpl implements EntriesService{
         }
 
         if(Objects.nonNull(entry.getCalories())){
+
+            //also update the date_sum_calorie_table
+            DateSumCalorie dateSumCalorie=dateSumCalorieRepository.findByUserAndLocalDate(dbEntry.getUser(),dbEntry.getLocalDate());
+            if(Objects.isNull(dateSumCalorie)){
+                dateSumCalorie=DateSumCalorie
+                        .builder()
+                        .calorieSum(entry.getCalories())
+                        .user(dbEntry.getUser())
+                        .localDate(dbEntry.getLocalDate())
+                        .build();
+
+                dateSumCalorieRepository.save(dateSumCalorie);
+            }
+            else {
+                dateSumCalorie.setCalorieSum(dateSumCalorie.getCalorieSum()- dbEntry.getCalories() + entry.getCalories());
+//                dateSumCalorie.setCalorieSum(dateSumCalorie.getCalorieSum() + entry.getCalories());
+                dateSumCalorieRepository.save(dateSumCalorie);
+            }
+
             dbEntry.setCalories(entry.getCalories());
         }
 
         if(Objects.nonNull(entry.getLocalDate())){
+
+            //also update the date_sum_calorie_table
+            DateSumCalorie dateSumCalorie=dateSumCalorieRepository.findByUserAndLocalDate(dbEntry.getUser(),dbEntry.getLocalDate());
+            if(Objects.isNull(dateSumCalorie)){
+                //dont make old date entry then
+            }
+            else {
+                dateSumCalorie.setCalorieSum(dateSumCalorie.getCalorieSum()- dbEntry.getCalories());
+                dateSumCalorieRepository.save(dateSumCalorie);
+
+                // NOW CHECK FOR THE NEW LOCAL_DATE
+                DateSumCalorie forNewDate=dateSumCalorieRepository.findByUserAndLocalDate(dbEntry.getUser(),entry.getLocalDate());
+                if(Objects.isNull(forNewDate)){
+                    //make new row
+                    forNewDate=DateSumCalorie
+                            .builder()
+                            .user(dbEntry.getUser())
+                            .localDate(entry.getLocalDate())
+                            .calorieSum(dbEntry.getCalories())
+                            .build();
+
+                    dateSumCalorieRepository.save(forNewDate);
+                }
+                else{
+                    //update existing row
+                    forNewDate.setCalorieSum(forNewDate.getCalorieSum()+ dbEntry.getCalories());
+
+                    dateSumCalorieRepository.save(forNewDate);
+                }
+            }
+
             dbEntry.setLocalDate(entry.getLocalDate());
         }
 
